@@ -22,11 +22,13 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      flex-wrap: wrap; /* Allow wrapping for smaller screens */
     }
 
     .song-info {
       display: flex;
       align-items: center;
+      margin-bottom: 10px; /* Add spacing for smaller screens */
     }
 
     .album-art {
@@ -55,6 +57,7 @@
     .controls {
       display: flex;
       align-items: center;
+      margin-bottom: 10px; /* Add spacing for smaller screens */
     }
 
     .controls button {
@@ -84,10 +87,48 @@
     .volume {
       display: flex;
       align-items: center;
+      margin-top: 10px; /* Add spacing for smaller screens */
     }
 
     .volume input[type="range"] {
       margin-left: 10px;
+    }
+
+    .file-input {
+      margin-top: 10px;
+    }
+
+    /* Media query for smaller screens */
+    @media (max-width: 600px) {
+      .player {
+        flex-direction: column; /* Stack elements vertically */
+        align-items: flex-start; /* Align items to the start */
+      }
+
+      .song-info {
+        flex-direction: column; /* Stack song info vertically */
+        align-items: flex-start;
+      }
+
+      .album-art {
+        margin-right: 0;
+        margin-bottom: 10px; /* Add spacing between album art and details */
+      }
+
+      .controls {
+        justify-content: space-between; /* Spread buttons evenly */
+        width: 100%; /* Take full width */
+      }
+
+      .progress-bar {
+        margin: 10px 0; /* Add spacing above and below */
+        width: 100%; /* Take full width */
+      }
+
+      .volume {
+        width: 100%; /* Take full width */
+        justify-content: space-between; /* Spread elements evenly */
+      }
     }
   </style>
 </head>
@@ -96,8 +137,8 @@
     <div class="song-info">
       <div class="album-art"></div>
       <div class="details">
-        <div class="title">Don't Let Go</div>
-        <div class="artist">Kazukii</div>
+        <div class="title" id="song-title">Select a Song</div>
+        <div class="artist" id="song-artist">Unknown Artist</div>
       </div>
     </div>
     <div class="controls">
@@ -108,23 +149,27 @@
     <div class="progress-bar">
       <span class="time" id="current-time">0:00</span>
       <input type="range" id="progress" value="0" max="100">
-      <span class="time" id="duration">3:07</span>
+      <span class="time" id="duration">0:00</span>
     </div>
     <div class="volume">
       <button id="mute">🔊</button>
       <input type="range" id="volume" value="100" max="100">
     </div>
+    <div class="file-input">
+      <input type="file" id="file-selector" accept="audio/*">
+    </div>
   </div>
   <script>
-    // JavaScript to handle audio playback
     const playButton = document.getElementById('play');
     const progressBar = document.getElementById('progress');
     const currentTime = document.getElementById('current-time');
     const duration = document.getElementById('duration');
     const volumeControl = document.getElementById('volume');
     const muteButton = document.getElementById('mute');
+    const fileSelector = document.getElementById('file-selector');
+    const songTitle = document.getElementById('song-title');
 
-    const audio = new Audio('your-audio-file.mp3'); // Replace with your local audio file
+    let audio = new Audio();
 
     playButton.addEventListener('click', () => {
       if (audio.paused) {
@@ -156,6 +201,17 @@
 
     audio.addEventListener('loadedmetadata', () => {
       duration.textContent = formatTime(audio.duration);
+    });
+
+    fileSelector.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        audio.src = fileURL;
+        audio.load();
+        songTitle.textContent = file.name;
+        playButton.textContent = '▶';
+      }
     });
 
     function formatTime(seconds) {
