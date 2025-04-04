@@ -1,0 +1,100 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #0a0a0a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.audio-player {
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+}
+
+.playlist-info {
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.album-art img {
+    width: 100%;
+    border-radius: 10px;
+    margin: 20px 0;
+}
+
+.track-info h3 {
+    margin: 10px 0 5px;
+    font-size: 1.2em;
+}
+
+.track-info p {
+    margin: 0;
+    font-size: 0.9em;
+    color: #aaa;
+}
+
+.progress-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 15px 0;
+}
+
+.progress-bar .progress-slider {
+    flex: 1;
+    margin: 0 10px;
+}
+
+.controls {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.control-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5em;
+    cursor: pointer;
+}
+
+.control-btn:focus {
+    outline: none;
+}
+
+.playlist {
+    margin-top: 20px;
+    text-align: left;
+    background-color: #1a1a1a;
+    border-radius: 10px;
+    padding: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+.playlist ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.playlist li {
+    padding: 10px;
+    cursor: pointer;
+    color: white;
+    border-bottom: 1px solid #333;
+}
+
+.playlist li.active {
+    background-color: #333;
+    font-weight: bold;
+}
+
+.playlist li:hover {
+    background-color: #444;
+}

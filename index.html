@@ -1,224 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Audio Player</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: Arial, sans-serif;
-      background: url('background.jpg') no-repeat center center/cover;
-      color: white;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      height: 100vh;
-    }
-
-    .player {
-      background: rgba(0, 0, 0, 0.7);
-      padding: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      flex-wrap: wrap; /* Allow wrapping for smaller screens */
-    }
-
-    .song-info {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px; /* Add spacing for smaller screens */
-    }
-
-    .album-art {
-      width: 60px;
-      height: 60px;
-      margin-right: 15px;
-      background: gray;
-      border-radius: 5px;
-    }
-
-    .details {
-      display: flex;
-      flex-direction: column;
-    }
-
-    .details .title {
-      font-size: 18px;
-      font-weight: bold;
-    }
-
-    .details .artist {
-      font-size: 14px;
-      color: #ccc;
-    }
-
-    .controls {
-      display: flex;
-      align-items: center;
-      margin-bottom: 10px; /* Add spacing for smaller screens */
-    }
-
-    .controls button {
-      background: none;
-      border: none;
-      color: white;
-      font-size: 20px;
-      margin: 0 10px;
-      cursor: pointer;
-    }
-
-    .progress-bar {
-      flex-grow: 1;
-      margin: 0 20px;
-      display: flex;
-      align-items: center;
-    }
-
-    .progress-bar input[type="range"] {
-      width: 100%;
-    }
-
-    .time {
-      font-size: 12px;
-    }
-
-    .volume {
-      display: flex;
-      align-items: center;
-      margin-top: 10px; /* Add spacing for smaller screens */
-    }
-
-    .volume input[type="range"] {
-      margin-left: 10px;
-    }
-
-    .file-input {
-      margin-top: 10px;
-    }
-
-    /* Media query for smaller screens */
-    @media (max-width: 600px) {
-      .player {
-        flex-direction: column; /* Stack elements vertically */
-        align-items: flex-start; /* Align items to the start */
-      }
-
-      .song-info {
-        flex-direction: column; /* Stack song info vertically */
-        align-items: flex-start;
-      }
-
-      .album-art {
-        margin-right: 0;
-        margin-bottom: 10px; /* Add spacing between album art and details */
-      }
-
-      .controls {
-        justify-content: space-between; /* Spread buttons evenly */
-        width: 100%; /* Take full width */
-      }
-
-      .progress-bar {
-        margin: 10px 0; /* Add spacing above and below */
-        width: 100%; /* Take full width */
-      }
-
-      .volume {
-        width: 100%; /* Take full width */
-        justify-content: space-between; /* Spread elements evenly */
-      }
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audio Player with Playlist</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="player">
-    <div class="song-info">
-      <div class="album-art"></div>
-      <div class="details">
-        <div class="title" id="song-title">Select a Song</div>
-        <div class="artist" id="song-artist">Unknown Artist</div>
-      </div>
+    <div class="audio-player">
+        <div class="playlist-info">
+            <p>PLAYING FROM PLAYLIST</p>
+            <h2 id="playlist-name">Melodic Dubstep</h2>
+        </div>
+        <div class="album-art">
+            <img id="album-art" src="album-art1.jpg" alt="Album Art">
+        </div>
+        <div class="track-info">
+            <h3 id="track-title">Not Even Love</h3>
+            <p id="track-artist">Seven Lions, ILLENIUM, ÁSDÍS</p>
+        </div>
+        <div class="progress-bar">
+            <span class="current-time" id="current-time">0:00</span>
+            <input type="range" id="progress-slider" min="0" max="100" value="0">
+            <span class="duration" id="duration">0:00</span>
+        </div>
+        <div class="controls">
+            <button id="shuffle" class="control-btn">🔀</button>
+            <button id="prev" class="control-btn">⏮️</button>
+            <button id="play-pause" class="control-btn">⏸️</button>
+            <button id="next" class="control-btn">⏭️</button>
+            <button id="repeat" class="control-btn">🔁</button>
+        </div>
+        <div class="playlist">
+            <ul id="playlist">
+                <li data-index="0" class="active">Not Even Love - Seven Lions, ILLENIUM, ÁSDÍS</li>
+                <li data-index="1">Track 2 - Artist 2</li>
+                <li data-index="2">Track 3 - Artist 3</li>
+            </ul>
+        </div>
     </div>
-    <div class="controls">
-      <button id="prev">⏮</button>
-      <button id="play">▶</button>
-      <button id="next">⏭</button>
-    </div>
-    <div class="progress-bar">
-      <span class="time" id="current-time">0:00</span>
-      <input type="range" id="progress" value="0" max="100">
-      <span class="time" id="duration">0:00</span>
-    </div>
-    <div class="volume">
-      <button id="mute">🔊</button>
-      <input type="range" id="volume" value="100" max="100">
-    </div>
-    <div class="file-input">
-      <input type="file" id="file-selector" accept="audio/*">
-    </div>
-  </div>
-  <script>
-    const playButton = document.getElementById('play');
-    const progressBar = document.getElementById('progress');
-    const currentTime = document.getElementById('current-time');
-    const duration = document.getElementById('duration');
-    const volumeControl = document.getElementById('volume');
-    const muteButton = document.getElementById('mute');
-    const fileSelector = document.getElementById('file-selector');
-    const songTitle = document.getElementById('song-title');
-
-    let audio = new Audio();
-
-    playButton.addEventListener('click', () => {
-      if (audio.paused) {
-        audio.play();
-        playButton.textContent = '⏸';
-      } else {
-        audio.pause();
-        playButton.textContent = '▶';
-      }
-    });
-
-    audio.addEventListener('timeupdate', () => {
-      progressBar.value = (audio.currentTime / audio.duration) * 100;
-      currentTime.textContent = formatTime(audio.currentTime);
-    });
-
-    progressBar.addEventListener('input', () => {
-      audio.currentTime = (progressBar.value / 100) * audio.duration;
-    });
-
-    volumeControl.addEventListener('input', () => {
-      audio.volume = volumeControl.value / 100;
-    });
-
-    muteButton.addEventListener('click', () => {
-      audio.muted = !audio.muted;
-      muteButton.textContent = audio.muted ? '🔇' : '🔊';
-    });
-
-    audio.addEventListener('loadedmetadata', () => {
-      duration.textContent = formatTime(audio.duration);
-    });
-
-    fileSelector.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      if (file) {
-        const fileURL = URL.createObjectURL(file);
-        audio.src = fileURL;
-        audio.load();
-        songTitle.textContent = file.name;
-        playButton.textContent = '▶';
-      }
-    });
-
-    function formatTime(seconds) {
-      const minutes = Math.floor(seconds / 60);
-      const secs = Math.floor(seconds % 60).toString().padStart(2, '0');
-      return `${minutes}:${secs}`;
-    }
-  </script>
+    <script src="app.js"></script>
 </body>
 </html>
